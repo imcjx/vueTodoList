@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VueTodoList</title>
+    <link rel="stylesheet" href="vueTodoList.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div class="head">
+        <h1>
+            <i class="el-icon-date"></i>
+           <span>TodoList</span> 
+        </h1>
+        <img src="img/bg.jpg" alt="海绵宝宝">
+    </div>
+    <div class="drawer">
+        <div class="drawer-content"> {{drawerMsg}} </div>
+    </div>
+    <div class="container">
+        <div class="container-head">
+            <div class="inputText">
+                <input v-model="content" type="text" :placeholder="tipInfo">
+            </div>
+            <div class="inputButton">
+                <input @click="add" @keyup.enter="add" class="btnAdd" type="button" value="添 加"><input @click="search" class="btnQuery" type="button" value="查 询">
+            </div>
+        </div> 
+        <div class="main">
+            <div class="completed">
+                <div class="smallHead"><h2 style="color: rgb(103,194,58);">-已 完 成-</h2></div>
+                <transition-group appear tag="ul">
+                        <li v-for="(item,i) in search(doneList)" :key="item.id">
+                            <input @click="changeStatus(item.id,doneList)" type="checkbox" :checked="item.checked">
+                            <label>
+                                <span v-if="item.flag" :title="item.msg" @click="msgShow(item.id,doneList)">{{ item.msg }}</span>
+                                <input v-else type="text" class="editInput" :value="editValue" @blur="editPreserve(item.id,doneList)" v-focus v-model="editValue"> 
+                                <a @click="del(item.id,doneList)" href="javascripts:;"><i class="el-icon-delete"></i></a>
+                                <a @click="edit(item.id,doneList)" href="javascripts:;" style="margin-right: 10px;"><i class="el-icon-edit"></i></a>
+                            </label>
+                            <hr>
+                        </li>
+                </transition-group>
+            </div>
+            <div class="uncompleted">
+                <div class="smallHead"><h2 style="color: rgb(245,108,108);">-未 完 成-</h2></div>
+                <transition-group appear tag="ul">
+                    <li v-for="(item,i) in search(undoneList)" :key="item.id">
+                        <input @click="changeStatus(item.id,undoneList)" type="checkbox" :checked="item.checked">
+                        <label>
+                            <span v-if="item.flag" :title="item.msg" @click="msgShow(item.id,undoneList)">{{ item.msg }}</span>
+                            <input v-else type="text" class="editInput" :value="editValue" @blur="editPreserve(item.id,undoneList)" v-focus v-model="editValue">
+                            <a @click="del(item.id,undoneList)" href="javascripts:;"><i class="el-icon-delete"></i></a>
+                            <a @click="edit(item.id,undoneList)" href="javascripts:;" style="margin-right: 10px;"><i class="el-icon-edit"></i></a>
+                        </label>
+                        <hr>
+                    </li>
+                </transition-group>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const drawer=new Vue({
+            el: ".drawer",
+            data:{
+                //抽屉里的信息
+                drawerMsg:'暂无信息(帮助显示长信息)',
+            },
+        })
+
+       const main=new Vue({
+            el: ".container",
+            data: {
+                //编辑时的信息
+                editValue:'',
+                //输入框提示内容
+                tipInfo: '输入添加内容或查询内容',
+                //输入信息
+                content: '',
+                //已完成列表
+                doneList: [
+                    {id:1, msg:"第1条消息第1条消息第1条消息第1条消息第1条消息第",checked:true,flag:true},
+                    {id:2, msg:"第2条消息",checked:true,flag:true},
+
+                ],
+                //未完成列表
+                undoneList: [
+                    {id:7, msg:"第1条消息",checked:false,flag:true},
+                    {id:8, msg:"第2条消息",checked:false,flag:true},
+                ],
+            },
+            //页面加载完毕后从localstorage获取数据
+            created(){
+                this.loadData();
+            },
+            methods: {
+                //将更新后的
+                update(){
+                    localStorage.setItem('dList',JSON.stringify(this.doneList));
+                    localStorage.setItem('udList',JSON.stringify(this.undoneList));
+                },
+                //从localstorage里加载数据
+                loadData(){
+                    //||防止parse里传入undefined时报错
+                    [this.doneList,this.undoneList]=[JSON.parse(localStorage.getItem('dList')||'[]')
+                                        ,JSON.parse(localStorage.getItem('udList')||'[]')];
+                },
+                //添加
+                add(){
+                    //信息为空的时候不允许输入
+                    if(this.content.trim()==''){
+                        this.tipInfo="输入信息不能为空或空字符！";
+                    }else{
+                        this.undoneList.unshift({id:Date.now(),msg:this.content.trim(),checked:false,flag:true});
+                        this.tipInfo="输入添加内容或查询内容";
+                        this.update();
+                    } 
+                    this.content='';    
+                },
+                //删除
+                del(id,arr){
+                    // arr=arr.filter(item => item.id!=id); 不能用？
+                    arr.some((item,i) =>{
+                        if(item.id==id){
+                            arr.splice(i,1);
+                            this.update();
+                            return true;
+                        }
+                    })
+                },
+                //编辑
+                edit(id,arr){
+                    arr.some(item =>{
+                        if(item.id==id){
+                            item.flag=!item.flag;
+                            this.editValue=item.msg;
+                            this.update();
+                            return true;
+                        }
+                    })
+                },
+                //编辑框失去焦点
+                editPreserve(id,arr){
+                    arr.some(item =>{
+                        if(item.id==id){
+                            item.msg=this.editValue;
+                            this.editValue='',
+                            item.flag=!item.flag;
+                            this.update();
+                            return true;
+                        }
+                    })
+                },
+                //复选框勾选
+                changeStatus(id,arr){
+                    const targetArr=arr==this.doneList?this.undoneList:this.doneList;
+                    arr.some((item,i) =>{
+                        if(item.id==id){
+                            item.checked=!item.checked;
+                            targetArr.unshift(item);
+                            arr.splice(i,1);
+                            this.update();
+                            return true;
+                        }
+                    })           
+                },
+                //查询(查询按钮没用....)
+                search(arr){
+                    const newList=arr.filter(item => {
+                        if(item.msg.includes(this.content)){
+                            return item;
+                        }
+                    })
+                    return newList;
+                },
+                //点击li后 长消息会在侧边栏显示
+                msgShow(id,arr){
+                    drawer.drawerMsg=arr[arr.findIndex(item => item.id==id)].msg;
+                }
+            },
+            directives:{
+                'focus':{
+                    inserted(el){
+                        el.focus();
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>

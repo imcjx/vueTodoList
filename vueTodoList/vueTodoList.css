@@ -1,0 +1,186 @@
+
+
+*{
+    font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background: url(img/bg_.jpg) no-repeat;
+    background-size: 100%;
+}
+
+.head{
+    width: 30%;
+    margin: 20px auto;
+    padding: 10px 0;
+    color: rgb(255,255,255);
+    background-color: rgb(83,168,255);
+    border-radius: 15px;
+    text-align: center;
+}
+
+.head img{
+    width: 15%;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    transform: rotate(45deg);
+}
+
+.head img:hover{
+    transition: all 0.5s ease;
+    transform: rotate(0);
+}
+
+.main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.completed , .uncompleted{
+    width: 30%;
+    min-height: 400px;
+    margin: 0 20px;
+    padding: 20px;
+    border: 1px solid rgb(255,255,255);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.container-head{
+    margin: 0 auto 20px;
+    padding: 5px;
+    /* box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2); */
+}
+
+.inputText , .inputButton{
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.inputText > input{
+    width: 20%;
+    font-size: 18px;
+    line-height: 1.6em;
+    text-align: center;
+    border: none;
+    border-bottom: 2px solid rgb(83,168,255);
+    outline: none;
+}
+
+.inputButton > input{
+    width: 7%;
+    padding: 6px 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: rgb(64,158,255);
+    color: rgb(255,255,255);
+    font-size: 16px;
+}
+.inputButton > .btnAdd{
+    border-right: 2px dashed rgb(255,255,255);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.inputButton > .btnQuery{
+    border-left: 2px dashed rgb(255,255,255);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.btnAdd:hover , .btnQuery:hover{
+    opacity: 0.5;
+    transform: translateY(12px);
+    transition: all 0.5s ease;
+}
+
+.smallHead{
+    margin-bottom: 5px;
+    text-align: center;
+    color: rgb(64,158,255);
+}
+
+ul > li{
+    list-style: none;
+    margin-bottom: 5px;
+    line-height: 1.6em;
+}
+
+ul > li span{
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom; /*解决overflow:hidden后baseline的对齐问题*/
+    max-width: 80%;
+    cursor: pointer;
+}
+
+ul > li input{
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+ul > li a{
+    float: right;
+    color: rgb(0, 0, 0);
+}
+
+ul > li a:hover{
+    color: rgb(64,158,255);
+}
+
+.editInput{
+    width: 80%;
+    border: none;
+    outline: none;
+    border-bottom: 2px dashed rgb(64,158,255);
+    font-size: 16px;
+    line-height: 1.6em;
+}
+
+.drawer{
+    position: absolute;
+    top: 20px;
+    left: calc(-20% + 20px);
+    width: 20%;
+    padding: 25px 20px;
+    background-color: rgba(83,168,255,0.5);
+    border-radius: 10px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.drawer:hover{
+    left: 0;
+    transition: all 0.8s ease;
+}
+
+.drawer-content{
+    background-color: rgba(255,255,255);
+    padding: 10px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.v-enter,.v-leave-to{
+    opacity: 0;
+    transform: translateY(80px);
+}
+
+.v-enter-active,.v-leave-active{
+    transition: all 0.8s ease;
+}
+
+.v-move{
+    transition: all 0.8s ease;
+}
+.v-leave-active{
+    position: absolute;
+}
